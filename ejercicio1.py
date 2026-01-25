@@ -2,33 +2,75 @@
 #   INVENTARIO DE DARK SOULS 3 EN PYTHON
 # ==========================================
 
-"""
-Módulo de gestión de inventario inspirado en Dark Souls 3.
-Permite añadir, buscar, modificar, eliminar y mostrar objetos.
-Estructura utilizada: lista de diccionarios.
-"""
+import json
+import logging
+import os
 
-# Estructura principal del inventario
+ARCHIVO_JSON = "inventario_ds3.json"
+ARCHIVO_LOG = "inventario.log"
+
+# ------------------------------------------
+# CONFIGURACIÓN DEL LOGGING
+# ------------------------------------------
+
+logging.basicConfig(
+    filename=ARCHIVO_LOG,
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+logging.info("Aplicación iniciada.")
+
+# ------------------------------------------
+# INVENTARIO GLOBAL
+# ------------------------------------------
+
 inventario = []
+
+# ------------------------------------------
+# FUNCIONES JSON
+# ------------------------------------------
+
+def cargar_inventario():
+    """Carga el inventario desde un archivo JSON."""
+    global inventario
+
+    if not os.path.exists(ARCHIVO_JSON):
+        logging.warning("No existe archivo JSON. Se inicia inventario vacío.")
+        return
+
+    try:
+        with open(ARCHIVO_JSON, "r", encoding="utf-8") as archivo:
+            inventario = json.load(archivo)
+            logging.info("Inventario cargado correctamente desde JSON.")
+    except Exception as e:
+        logging.error(f"Error cargando inventario: {e}")
+
+
+def guardar_inventario():
+    """Guarda el inventario en un archivo JSON."""
+    try:
+        with open(ARCHIVO_JSON, "w", encoding="utf-8") as archivo:
+            json.dump(inventario, archivo, indent=4, ensure_ascii=False)
+            logging.info("Inventario guardado correctamente en JSON.")
+    except Exception as e:
+        logging.error(f"Error guardando inventario: {e}")
 
 
 # ---------------------------------------------------------
 def insertar_elemento(datos):
-    """
-    Solicita datos al usuario y agrega un nuevo objeto al inventario.
-    Valida que el ID sea un número y que el nombre no esté vacío.
-    """
     print("\n Añadir nuevo objeto al inventario")
 
-    # Validación de ID numérico
     while True:
         try:
             item_id = int(input("ID del objeto: "))
+            if any(item["id"] == item_id for item in datos):
+                print("Ese ID ya existe.")
+                continue
             break
         except ValueError:
             print("El ID debe ser un número.")
 
-    # Validación del nombre
     nombre = input("Nombre del objeto: ").strip()
     while nombre == "":
         print("El nombre no puede estar vacío.")
@@ -37,7 +79,6 @@ def insertar_elemento(datos):
     tipo = input("Tipo (arma, anillo, consumible...): ").strip()
     rareza = input("Rareza (común, raro, épico, legendario): ").strip()
 
-    # Crear diccionario-objeto
     nuevo_item = {
         "id": item_id,
         "nombre": nombre,
@@ -46,45 +87,44 @@ def insertar_elemento(datos):
     }
 
     datos.append(nuevo_item)
+    guardar_inventario()
+
+    logging.info(f"Objeto añadido: {nuevo_item}")
     print("Objeto añadido con éxito.")
 
 
 # ---------------------------------------------------------
 def buscar_elemento(datos):
-    """
-    Busca un objeto del inventario según su ID.
-    Devuelve el objeto encontrado o un mensaje informativo.
-    """
     print("\n Buscar objeto por ID")
+
     try:
         item_id = int(input("Introduce el ID a buscar: "))
     except ValueError:
+        logging.warning("Búsqueda con ID inválido.")
         print("Debes introducir un número.")
         return
 
     for item in datos:
         if item["id"] == item_id:
+            logging.info(f"Búsqueda realizada. Objeto encontrado: {item}")
             print("Objeto encontrado:", item)
             return item
 
+    logging.info(f"Búsqueda fallida. ID {item_id} no existe.")
     print("No se encontró ningún objeto con ese ID.")
 
 
 # ---------------------------------------------------------
 def modificar_elemento(datos):
-    """
-    Permite modificar un campo de un objeto existente.
-    Maneja errores si el ID no existe.
-    """
     print("\n Modificar objeto del inventario")
 
     try:
         item_id = int(input("ID del objeto a modificar: "))
     except ValueError:
+        logging.warning("Modificación con ID inválido.")
         print(" ID inválido.")
         return
 
-    # Buscar el objeto
     for item in datos:
         if item["id"] == item_id:
             print("Objeto encontrado:", item)
@@ -101,40 +141,41 @@ def modificar_elemento(datos):
             if nueva_rareza:
                 item["rareza"] = nueva_rareza
 
+            guardar_inventario()
+            logging.info(f"Objeto modificado: {item}")
             print("Objeto modificado correctamente.")
             return
-    
+
+    logging.warning(f"Intento de modificar ID inexistente: {item_id}")
     print("El objeto con ese ID no existe.")
 
 
 # ---------------------------------------------------------
 def eliminar_elemento(datos):
-    """
-    Elimina un objeto según su ID.
-    Maneja errores si el ID no existe.
-    """
     print("\n Eliminar objeto del inventario")
 
     try:
         item_id = int(input("ID del objeto a eliminar: "))
     except ValueError:
+        logging.warning("Eliminación con ID inválido.")
         print("ID inválido.")
         return
 
     for item in datos:
         if item["id"] == item_id:
             datos.remove(item)
+            guardar_inventario()
+
+            logging.info(f"Objeto eliminado: {item}")
             print("Objeto eliminado.")
             return
 
+    logging.warning(f"Intento de borrar ID inexistente: {item_id}")
     print("No hay ningún objeto con ese ID.")
 
 
 # ---------------------------------------------------------
 def mostrar_todos(datos):
-    """
-    Muestra el inventario completo de forma formateada.
-    """
     print("\n Inventario completo:")
 
     if not datos:
@@ -150,9 +191,8 @@ def mostrar_todos(datos):
 # ==========================================
 
 def menu():
-    """
-    Muestra y gestiona el menú interactivo del programa.
-    """
+    cargar_inventario()
+
     while True:
         print("""
 =============================
@@ -179,12 +219,15 @@ def menu():
         elif opcion == "5":
             mostrar_todos(inventario)
         elif opcion == "6":
+            guardar_inventario()
+            logging.info("Aplicación cerrada por el usuario.")
             print("Saliendo del inventario... ¡Que el fuego te guíe!")
             break
         else:
+            logging.warning(f"Opción inválida seleccionada: {opcion}")
             print("Opción inválida. Intenta nuevamente.")
 
 
-# Ejecutar menú si el archivo se corre directamente
+# ------------------------------------------
 if __name__ == "__main__":
     menu()
