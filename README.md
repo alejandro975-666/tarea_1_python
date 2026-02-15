@@ -42,8 +42,8 @@ python gestor_pilotos_f1.py
 ## 🗂️ Estructura del proyecto
 
 ```
-inventario_f1/
-├── inventario_f1.py      # Script principal
+gestor_pilotos_f1/
+├── gestor_pilotos_f1.py      # Script principal
 ├── inventario_f1.json    # Datos persistentes (se genera automáticamente)
 ├── inventario_f1.log     # Log de actividad (se genera automáticamente)
 └── README.md
