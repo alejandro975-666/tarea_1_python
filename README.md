@@ -23,7 +23,7 @@ Aplicación de consola para gestionar un inventario de pilotos de Fórmula 1. Pe
 2. Ejecuta el script principal:
 
 ```bash
-python inventario_f1.py
+python gestor_pilotos_f1.py
 ```
 
 3. Navega por el menú interactivo con las opciones numeradas.
