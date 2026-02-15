@@ -1,4 +1,4 @@
-#🏎️ Inventario de F1 en Python
+# 🏎️ Inventario de F1 en Python
 
 Aplicación de consola para gestionar un inventario de pilotos de Fórmula 1. Permite añadir, buscar, modificar y eliminar pilotos, con persistencia en JSON y registro de actividad en un archivo de log.
 
