@@ -29,11 +29,13 @@ logging.info("Aplicación iniciada.")
 class Piloto:
     """Representa un piloto de Fórmula 1."""
 
-    def __init__(self, piloto_id, nombre, equipo, nacionalidad):
+    def __init__(self, piloto_id, nombre, equipo, nacionalidad, palmares, categoria):
         self.piloto_id = piloto_id
         self.nombre = nombre
         self.equipo = equipo
-        self.nacionalidad = nacionalidad
+        self.nacionalidad = nacionalidad,
+        self.palmares = palmares,
+        sel.categoria = categoria
 
     def to_dict(self):
         """Convierte el piloto a diccionario para guardarlo en JSON."""
@@ -41,12 +43,14 @@ class Piloto:
             "id": self.piloto_id,
             "nombre": self.nombre,
             "equipo": self.equipo,
-            "nacionalidad": self.nacionalidad
+            "nacionalidad": self.nacionalidad,
+            "palmares": self.palmares,
+            "categoria": self.categoria
         }
 
     def mostrar(self):
         """Muestra la información del piloto por pantalla."""
-        print(f"- ID: {self.piloto_id} | {self.nombre} | Equipo: {self.equipo} | Nacionalidad: {self.nacionalidad}")
+        print(f"- ID: {self.piloto_id} | {self.nombre} | Equipo: {self.equipo} | Nacionalidad: {self.nacionalidad} | Palmarés: {self.palmares} | Categoría: {self.categoria}")
 
 
 # ------------------------------------------
@@ -123,7 +127,12 @@ def insertar_piloto(inventario):
     equipo = input("Equipo (Ferrari, Mercedes, Red Bull...): ").strip()
     nacionalidad = input("Nacionalidad: ").strip()
 
-    nuevo = Piloto(piloto_id, nombre, equipo, nacionalidad)
+    palmares = input("Palmarés del piloto: (Carreras ganadas, Títulos, Gran Premios ganados...). Si no tiene palmarés, indicalo.")
+
+    categoria = input("")
+    
+
+    nuevo = Piloto(piloto_id, nombre, equipo, nacionalidad, palmares, categoria)
     inventario.pilotos.append(nuevo)
     inventario.guardar()
 
