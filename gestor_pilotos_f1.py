@@ -35,7 +35,7 @@ class Piloto:
         self.equipo = equipo
         self.nacionalidad = nacionalidad,
         self.palmares = palmares,
-        sel.categoria = categoria
+        self.categoria = categoria
 
     def to_dict(self):
         """Convierte el piloto a diccionario para guardarlo en JSON."""
@@ -73,7 +73,7 @@ class Inventario:
             with open(ARCHIVO_JSON, "r", encoding="utf-8") as archivo:
                 datos = json.load(archivo)
                 self.pilotos = [
-                    Piloto(p["id"], p["nombre"], p["equipo"], p["nacionalidad"])
+                    Piloto(p["id"], p["nombre"], p["equipo"], p["nacionalidad"], p["palmares"], p["categoria"])
                     for p in datos
                 ]
                 logging.info("Inventario cargado correctamente.")
@@ -126,10 +126,8 @@ def insertar_piloto(inventario):
 
     equipo = input("Equipo (Ferrari, Mercedes, Red Bull...): ").strip()
     nacionalidad = input("Nacionalidad: ").strip()
-
     palmares = input("Palmarés del piloto: (Carreras ganadas, Títulos, Gran Premios ganados...). Si no tiene palmarés, indicalo.")
-
-    categoria = input("")
+    categoria = input("Categorías en las que el piloto participa o ha participado: ")
     
 
     nuevo = Piloto(piloto_id, nombre, equipo, nacionalidad, palmares, categoria)
@@ -190,6 +188,14 @@ def modificar_piloto(inventario):
     nueva_nacionalidad = input("Nueva nacionalidad: ").strip()
     if nueva_nacionalidad:
         piloto.nacionalidad = nueva_nacionalidad
+
+    nuevo_palmares = input("Nuevo palmares: (si no ha habido cambios dejar en blanco.)").strip()
+    if nuevo_palmares:
+        piloto.palmares = nuevo_palmares
+
+    nueva_categoria = input("Nueva categoría: (si no ha habido cambios dejar en blanco.)").strip()
+    if nueva_categoria:
+        piloto.categoria = nueva_categoria
 
     inventario.guardar()
     logging.info(f"Piloto modificado: {piloto.to_dict()}")
