@@ -126,7 +126,7 @@ def insertar_piloto(inventario):
 
     equipo = input("Equipo (Ferrari, Mercedes, Red Bull...): ").strip()
     nacionalidad = input("Nacionalidad: ").strip()
-    palmares = input("Palmarés del piloto: (Carreras ganadas, Títulos, Gran Premios ganados...). Si no tiene palmarés, indicalo.")
+    palmares = input("Palmarés del piloto (Carreras ganadas, Títulos, Gran Premios ganados...): ")
     categoria = input("Categorías en las que el piloto participa o ha participado: ")
     
 
