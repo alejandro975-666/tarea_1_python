@@ -33,8 +33,8 @@ class Piloto:
         self.piloto_id = piloto_id
         self.nombre = nombre
         self.equipo = equipo
-        self.nacionalidad = nacionalidad,
-        self.palmares = palmares,
+        self.nacionalidad = nacionalidad
+        self.palmares = palmares
         self.categoria = categoria
 
     def to_dict(self):
@@ -99,6 +99,27 @@ class Inventario:
             if p.piloto_id == piloto_id:
                 return p
         return None
+
+    def piloto_con_mas_titulos(self):
+        """Devuelve el piloto con más títulos."""
+        if not self.pilotos:
+            return None
+        return max(self.pilotos, key=lambda p: int(p.palmares))
+
+    
+    def buscar_por_nombre(self, nombre):
+        """Busca pilotos por nombre."""
+        return[p for p in self.pilotos if nombre.lower in p.nombre.lower]
+
+
+    def buscar_por_equipos(self, equipo):
+        """Busca pilostos por equipo."""
+        return[p for p in self.pilotos if equipo.lower in p.equipo.lower]
+    
+
+    def buscar_por_nacionalidad(self, equipo):
+        """Busca pilostos por equipo."""
+        return[p for p in self.pilotos if nacionalidad.lower in p.nacionalidad.lower]
 
 
 # ------------------------------------------
@@ -237,6 +258,52 @@ def mostrar_todos(inventario):
         piloto.mostrar()
 
 
+def mostrar_estadisticas(inventario):
+    """Muestra estadísticas del inventario."""
+    print("\n ESTADISTICAS F1")
+    mejor = inventario.piloto_con_mas_titulos()
+
+    if mejor:
+        print(f"Piloto con más titulos: {mejor.nombre} ({mejor.palmares} titulos)")
+    else:
+        print("No hay pilostos registrados")
+
+
+def busqueda_avanzada(inventario):
+    """Permite buscar distintos pilotos a traves de distintos filtros."""
+    print("""
+=============================
+   MENÚ DE BÚSQUEDA AVANZADA
+=============================
+1. Buscar por nombre
+2. Buscar por equipo
+3. Buscar por nacionalidad
+
+Pulse cualquier otro número para salir de la búsqueda avanzada.
+""")
+    opcion = input("Elige una opción: ")
+
+    if opcion == "1":
+        nombre = input("Introduce el nombre: ")
+        resultados = inventario.buscar_por_nombre(nombre)
+    elif opcion == "2":
+        equipo = input("Introduce el nombre del equipo: ")
+        resultados = inventario.buscar_por_equipo(equipo)
+    elif opcion == "3":
+        nacionalidad = input("Introduce la nacionalidad del o de los pilotos deseados: ")
+        resultados = inventario.buscar_por_nacionalidad(nacionalidad)
+    else:
+        print("Opción inválida.")
+        return
+
+    if resultados:
+        print("\n RESULTADOS:")
+        for piloto in resultados:
+            piloto.mostrar()
+    else:
+        print("No se encontraron resultados.")
+    
+
 # ==========================================
 #              MENÚ PRINCIPAL
 # ==========================================
@@ -255,7 +322,8 @@ def menu():
 3. Modificar piloto
 4. Eliminar piloto
 5. Mostrar todos los pilotos
-6. Salir
+6. Búsqueda avanzada
+7. Salir
 """)
 
         opcion = input("Elige una opción: ")
@@ -271,6 +339,8 @@ def menu():
         elif opcion == "5":
             mostrar_todos(inventario)
         elif opcion == "6":
+            busqueda_avanzada(inventario)
+        elif opcion == "7":
             inventario.guardar()
             logging.info("Aplicación cerrada por el usuario.")
             print("Saliendo... ¡Luces apagadas y allá vamos!")
