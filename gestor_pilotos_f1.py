@@ -344,11 +344,11 @@ def modificar_piloto(inventario):
     if nueva_nacionalidad:
         piloto.nacionalidad = nueva_nacionalidad
 
-    nuevo_palmares = input("Nuevo palmares: (si no ha habido cambios dejar en blanco.)").strip()
+    nuevo_palmares = input("Nuevo palmares (si no ha habido cambios dejar en blanco): ").strip()
     if nuevo_palmares:
         piloto.palmares = nuevo_palmares
 
-    nueva_categoria = input("Nueva categoría: (si no ha habido cambios dejar en blanco.)").strip()
+    nueva_categoria = input("Nueva categoría (si no ha habido cambios dejar en blanco): ").strip()
     if nueva_categoria:
         piloto.categoria = nueva_categoria
 
